@@ -82,7 +82,7 @@ p_value_greater_than: the probability that mean of data is
 not grater than mean of ref_data 
 
 
-Christoph Möhl
-Image and Data Analysis Facililty/Core Faciliies 
+Christoph Möhl,
+Image and Data Analysis Facililty/Core Faciliies,
 Deutsches Zentrum für Neurodegenerative Erkrankungen e. V. (DZNE) in der Helmholtz-Gemeinschaft
 German Center for Neurodegenerative Diseases (DZNE) within the Helmholtz Association
