@@ -57,7 +57,7 @@ def permutation_test(data, ref_data, detailed=False, n_combinations_max=20000, v
     if not greater_than_index.any():
         p_value_greater_than = 1
     else:
-        p_value_greater_than = 1-cum_freq[greater_than_index][0]
+        p_value_greater_than = 1-cum_freq[greater_than_index][-1]
         
     if not lower_than_index.any():
         p_value_lower_than = 1  
