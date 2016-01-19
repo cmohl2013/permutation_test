@@ -47,7 +47,7 @@ def permutationtest(data, ref_data, detailed=False, n_combinations_max=20000, ve
 
     print 'nr of mean diffs: ' + str(len(mean_diffs))
     freq, vals = getHistogramFreqAndCenters(mean_diffs)
-    bin_width = vals[1]-vals[0]
+    bin_width = getBinWidth(vals)
 
     cum_freq = np.cumsum(freq) * bin_width #cumulative histogram values
     
@@ -88,7 +88,10 @@ def permutationtest(data, ref_data, detailed=False, n_combinations_max=20000, ve
     return p_value               
 
 
-
+def getBinWidth(vals):
+    if len(vals)<2:
+        return 1
+    return vals[1]-vals[0]
 
 # def getPermutations(lst, num=None):
     
