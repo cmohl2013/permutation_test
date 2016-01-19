@@ -1,1 +1,1 @@
-from .permutation_test import permutation_test
+from .functions import permutationtest

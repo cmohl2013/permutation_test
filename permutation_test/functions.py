@@ -8,7 +8,7 @@ from fractions import Fraction
 
 
 
-def permutation_test(data, ref_data, detailed=False, n_combinations_max=20000, verbose=True):
+def permutationtest(data, ref_data, detailed=False, n_combinations_max=20000, verbose=True):
     ''' 
     Christoph Moehl, Image and Data Analysis Facility, DZNE Bonn, Germany
     christoph.moehl(at)dzne.de
@@ -100,9 +100,13 @@ def getDiffOfMean(lst_1, lst_2):
     '''
     result = mean(lst_1) - mean(lst_2)
     '''
+    
+    if (len(lst_1)==0) or (len(lst_2)==0):
+        raise ValueError('empty list') 
+
     out = np.nanmean(lst_1) - np.nanmean(lst_2)
     if np.isnan(out):
-        raise ValueError
+        raise ValueError('one or more of the average values are NaN')
     return out
     
 
@@ -193,6 +197,11 @@ def calc_bin_number(data):
     '''
     optimal bin number according to Freedman-Diaconis rule
     '''
+    
+    if len(np.unique(data))==1:
+        #if all values in the dataset are identical
+        return 1
+
     #inter quartile range
     iqr = np.percentile(data, 75) - np.percentile(data, 25) 
     

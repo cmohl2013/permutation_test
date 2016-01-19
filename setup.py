@@ -9,4 +9,6 @@ setup(name='permutation_test',
       license='MIT',
       packages=['permutation_test'],
       install_requires=['numpy'],
+      test_suite='nose.collector',
+      tests_require=['nose'],
       zip_safe=False)
