@@ -9,7 +9,7 @@ from fractions import Fraction
 
 
 
-def permutationtest(data, ref_data, detailed=False, n_combinations_max=20000, verbose=True):
+def permutationtest(data, ref_data, detailed=False, n_combinations_max=20000, verbose=True, n_bins=None):
     ''' 
     Christoph Moehl, Image and Data Analysis Facility, DZNE Bonn, Germany
     christoph.moehl(at)dzne.de
@@ -47,7 +47,7 @@ def permutationtest(data, ref_data, detailed=False, n_combinations_max=20000, ve
                             , n_combinations_max=n_combinations_max)
 
     print 'nr of mean diffs: ' + str(len(mean_diffs))
-    freq, vals = getHistogramFreqAndCenters(mean_diffs)
+    freq, vals = getHistogramFreqAndCenters(mean_diffs, n_bins=n_bins)
     bin_width = getBinWidth(vals)
 
     cum_freq = np.cumsum(freq) * bin_width #cumulative histogram values
@@ -228,12 +228,13 @@ def calc_bin_number(data):
 
 
 
-def getHistogramFreqAndCenters(data):
+def getHistogramFreqAndCenters(data, n_bins=None):
     '''
     calculation of histogram (frequency and bin positions) with auto bin number
     '''
     
-    n_bins = calc_bin_number(data)
+    if n_bins is None:
+        n_bins = calc_bin_number(data)
     print n_bins
     if n_bins < 10:
         warn_message = \
