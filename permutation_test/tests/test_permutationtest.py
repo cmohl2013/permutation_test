@@ -11,7 +11,9 @@ class TestPermutationtest(TestCase):
         res = permutationtest(lst_1, lst_2, verbose=False, detailed=True)
         print res
         #self.assertTrue(False)
-
+        #edge histogram values should be zero
+        self.assertEqual(res['hist_data'][0][0], 0.) #histogram value (probability)
+        self.assertEqual(res['hist_data'][0][-1], 0.) #histogram value (probability)
 
     def test_identical_values(self):
         
@@ -42,4 +44,4 @@ class TestPermutationtest(TestCase):
         res = permutationtest(lst_1, lst_2, verbose=True, detailed=True)    
 
         print res
-        self.assertTrue(False)
+        self.assertTrue(res['p_value_lower_than']<0.001)
