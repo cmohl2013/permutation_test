@@ -3,6 +3,7 @@
 import numpy as np
 import random
 import ap
+import warnings
 from operator import mul   
 from fractions import Fraction
 
@@ -51,19 +52,27 @@ def permutationtest(data, ref_data, detailed=False, n_combinations_max=20000, ve
 
     cum_freq = np.cumsum(freq) * bin_width #cumulative histogram values
     
-    greater_than_index = mean_diff >= vals
-    lower_than_index = mean_diff <= vals
+    greater_than_index = mean_diff > vals
+    lower_than_index = mean_diff < vals
+    # print 'greater than index: ' + str(greater_than_index)
+    # print 'loweer than index: ' + str(lower_than_index)
+    # print 'vals: ' + str(vals)
+    # print 'cum_freq: ' + str(cum_freq)
     
-    if not greater_than_index.any():
-        p_value_greater_than = 1
-    else:
-        p_value_greater_than = 1-cum_freq[greater_than_index][-1]
+    # if not greater_than_index.any():
+    #     p_value_greater_than = 1
+    # else:
+    #     p_value_greater_than = 1-cum_freq[greater_than_index][-1]
         
-    if not lower_than_index.any():
-        p_value_lower_than = 1  
-    else:
-        p_value_lower_than = cum_freq[lower_than_index][0]
-            
+    # if not lower_than_index.any():
+    #     p_value_lower_than = 1  
+    # else:
+    #     p_value_lower_than = cum_freq[lower_than_index][0]
+      
+    p_value_lower_than = cum_freq[lower_than_index][0]    
+    # print 'cum_freq[lower_than_index] :' + str(cum_freq[lower_than_index])
+    p_value_greater_than = 1-cum_freq[greater_than_index][-1]        
+    
     p_value = min((p_value_lower_than, p_value_greater_than))
 
 
@@ -223,9 +232,29 @@ def getHistogramFreqAndCenters(data):
     '''
     calculation of histogram (frequency and bin positions) with auto bin number
     '''
+    
+    n_bins = calc_bin_number(data)
+    print n_bins
+    if n_bins < 10:
+        warn_message = \
+        'WARNING: Bin number is only %s : statistical analysis might be affected.' % n_bins
+        print warn_message
+        #warnings.warn(warn_message, UserWarning)
+        
+
     freq, bin_edges = np.histogram(data\
-                        , bins=calc_bin_number(data)\
+                        , bins=n_bins\
                         , normed=True)
+    
+    freq = np.concatenate([[0],freq,[0]])
+    
+    bin_width = getBinWidth(bin_edges)
+    bin_edge_lowest = bin_edges[0] - bin_width 
+    bin_edge_highest = bin_edges[-1] + bin_width 
+
+    bin_edges = np.concatenate([[bin_edge_lowest],bin_edges,[bin_edge_highest]])
+
+
     bin_centers = np.diff(bin_edges)/2 + bin_edges[:-1]
     return (freq, bin_centers)
 

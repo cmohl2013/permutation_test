@@ -20,11 +20,14 @@ class TestHistogramFunctions(TestCase):
     	data = [1,1,1,1]
     	freq, bin_centers = getHistogramFreqAndCenters(data)
     	
-    	self.assertEqual(len(freq),1)
-    	self.assertEqual(len(bin_centers),1)
+        print 'freq: ' + str(freq)
+        print 'bin_centers: ' + str(bin_centers)
 
-    	self.assertEqual(freq[0],1.)
-    	self.assertEqual(bin_centers[0],1.)
+    	self.assertEqual(len(freq),3)
+    	self.assertEqual(len(bin_centers),3)
+
+    	self.assertEqual(freq[1],1.)
+    	self.assertEqual(bin_centers[1],1.)
 
     def test_getBinWidth(self): 
 
