@@ -5,11 +5,10 @@ import numpy as np
 class TestPermutationtest(TestCase):
     def test_calculation(self):
         
-    	lst_1 = [1,2,3]
-    	lst_2 = [4,5,6]
-
+        lst_1 = [1,2,3]
+        lst_2 = [4,5,6]
         res = permutationtest(lst_1, lst_2, verbose=False, detailed=True)
-        print res
+        print(res)
         #self.assertTrue(False)
         #edge histogram values should be zero
         self.assertEqual(res['hist_data'][0][0], 0.) #histogram value (probability)
@@ -17,11 +16,11 @@ class TestPermutationtest(TestCase):
 
     def test_identical_values(self):
         
-    	lst_1 = [1,1,1,1,1,1]
-    	lst_2 = [1,1,1,1,1]
+        lst_1 = [1,1,1,1,1,1]
+        lst_2 = [1,1,1,1,1]
 
         res = permutationtest(lst_1, lst_2, verbose=False, detailed=True)
-        print res
+        print(res)
         self.assertEqual(res['p_value_lower_than'], 1)  
         self.assertEqual(res['p_value_greater_than'], 1)
         self.assertEqual(res['p_value'], 1)
@@ -43,5 +42,5 @@ class TestPermutationtest(TestCase):
 
         res = permutationtest(lst_1, lst_2, verbose=True, detailed=True)    
 
-        print res
+        print(res)
         self.assertTrue(res['p_value_lower_than']<0.001)

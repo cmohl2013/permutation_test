@@ -460,13 +460,13 @@ class AFigure(object):
         zero_x = self.get_coord(0, self.canvas.min_x, self.canvas.x_step, limits=[1, self.canvas.x_size])
         if zero_x >= self.canvas.x_size:
             zero_x = self.canvas.x_size - 1
-        for y in xrange(self.canvas.y_size):
+        for y in range(self.canvas.y_size):
             self.output_buffer[zero_x][y] = self.y_axis_symbol
 
         zero_y = self.get_coord(0, self.canvas.min_y, self.canvas.y_step, limits=[1, self.canvas.y_size])
         if zero_y >= self.canvas.y_size:
             zero_y = self.canvas.y_size - 1
-        for x in xrange(self.canvas.x_size):
+        for x in range(self.canvas.x_size):
             self.output_buffer[x][zero_y] = self.x_axis_symbol  # u'\u23bc'
 
         self.output_buffer[zero_x][zero_y] = self.tickSymbols  # "+"
@@ -684,7 +684,7 @@ def plot(x, y=None, marker=None, shape=(50, 20), draw_axes=True,
 
     p = AFigure(**flags)
 
-    print p.plot(x, y, marker=marker, plot_slope=plot_slope)
+    print(p.plot(x, y, marker=marker, plot_slope=plot_slope))
 
 
 def steppify(x, y):
@@ -800,13 +800,13 @@ def imshow(im, extent=None, width=50, ncolors=16):
 
     string = ""
     if not _clr:
-        for h in xrange(height):  # first go through the height,  otherwise will roate
-            for w in xrange(width):
+        for h in range(height):  # first go through the height,  otherwise will roate
+            for w in range(width):
                 string += color[int(_im[w, h] * (ncolors - 1) )]
             string += "\n"
     else:
-        for h in xrange(height):  # first go through the height,  otherwise will roate
-            for w in xrange(width):
+        for h in range(height):  # first go through the height,  otherwise will roate
+            for w in range(width):
                 string += color[int(sum(_im[w, h]) * (ncolors - 1) )]
             string += "\n"
-    print string
+    print(string)

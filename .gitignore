@@ -10,4 +10,4 @@
 #mac os files
 .DS_Store
 ._*
-
+.eggs/

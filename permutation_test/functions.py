@@ -2,11 +2,11 @@
 
 import numpy as np
 import random
-import ap
-import warnings
+import permutation_test.ap as ap
+#import warnings
 from operator import mul   
 from fractions import Fraction
-
+import functools
 
 
 def permutationtest(data, ref_data, detailed=False, n_combinations_max=20000, verbose=True, n_bins=None):
@@ -46,7 +46,7 @@ def permutationtest(data, ref_data, detailed=False, n_combinations_max=20000, ve
     mean_diffs = getMeanDiffListForAllPermutations(data, ref_data\
                             , n_combinations_max=n_combinations_max)
 
-    print 'nr of mean diffs: ' + str(len(mean_diffs))
+    print('nr of mean diffs: ' + str(len(mean_diffs)))
     freq, vals = getHistogramFreqAndCenters(mean_diffs, n_bins=n_bins)
     bin_width = getBinWidth(vals)
 
@@ -79,12 +79,12 @@ def permutationtest(data, ref_data, detailed=False, n_combinations_max=20000, ve
 
     if verbose:
         p = ap.AFigure()
-        print '\n\n Distribution of mean differences'
-        print p.plot(vals, freq, marker = '*')
-        print 'mean difference of tested dataset: ' + str(mean_diff)
-        print 'p_value: ' + str(p_value)
-        print 'p_lower_than (probability that mean of test data is not lower than mean of ref data): ' + str(p_value_lower_than)
-        print 'p_value_greater_than (probability that mean of test data is not greater than mean of ref data): ' + str(p_value_greater_than)
+        print('\n\n Distribution of mean differences')
+        print(p.plot(vals, freq, marker = '*'))
+        print('mean difference of tested dataset: ' + str(mean_diff))
+        print('p_value: ' + str(p_value))
+        print('p_lower_than (probability that mean of test data is not lower than mean of ref data): ' + str(p_value_lower_than))
+        print('p_value_greater_than (probability that mean of test data is not greater than mean of ref data): ' + str(p_value_greater_than))
     if detailed:
         result = {'hist_data' : (freq, vals)\
                     , 'mean_difference' : mean_diff\
@@ -190,7 +190,7 @@ def getPerms(dat, n_of_group_a, n_combinations_max = 20000):
         perm_list = list(permutations(n_of_group_a, dat_index))
     else:
         perms_iter = permutations(n_of_group_a, dat_index)
-        print 'taking random subsample of size %s from %s possible permutations' % (n_combinations_max, n_combinations)
+        print('taking random subsample of size %s from %s possible permutations' % (n_combinations_max, n_combinations))
         perm_list = iter_sample_fast(perms_iter, n_combinations_max)
             
 
@@ -235,11 +235,11 @@ def getHistogramFreqAndCenters(data, n_bins=None):
     
     if n_bins is None:
         n_bins = calc_bin_number(data)
-    print n_bins
+    
     if n_bins < 10:
         warn_message = \
         'WARNING: Bin number is only %s : statistical analysis might be affected.' % n_bins
-        print warn_message
+        print(warn_message)
         #warnings.warn(warn_message, UserWarning)
         
 
@@ -273,7 +273,7 @@ def iter_sample_fast(iterable, samplesize):
     iterator = iterable#iter(iterable)
     # Fill in the first samplesize elements:
     try:
-        for _ in xrange(samplesize):
+        for _ in range(samplesize):
             results.append(iterator.next())
     except StopIteration:
         raise ValueError("Sample larger than population.")
@@ -290,6 +290,6 @@ def nCk(n,k):
     '''
     calculate number of combinations 'n over k' (binomial coefficient)
     '''
-    return int( reduce(mul, (Fraction(n-i, i+1) for i in range(k)), 1) )
+    return int( functools.reduce(mul, (Fraction(n-i, i+1) for i in list(range(k))), 1) )
 
 
