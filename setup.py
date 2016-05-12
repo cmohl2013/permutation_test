@@ -9,6 +9,10 @@ setup(name='permutation_test',
       license='MIT',
       packages=['permutation_test'],
       install_requires=['numpy', 'pandas'],
+      entry_points = {
+        'console_scripts': [\
+              'permtest=permutation_test.permtest:main']
+        },
       test_suite='nose.collector',
       tests_require=['nose'],
       zip_safe=False)
