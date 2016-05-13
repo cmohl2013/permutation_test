@@ -1,8 +1,14 @@
 from setuptools import setup
 
+def readme():
+    with open('README.rst') as f:
+        return f.read()
+
+
 setup(name='permutation_test',
       version='0.13',
       description='Implementation of Fishers permutation test',
+      long_description=readme(),
       url='https://github.com/cmohl2013/permutation_test',
       author='Christoph Moehl',
       author_email='christoph.moehl@dzne.de',

@@ -8,6 +8,13 @@ def get_treatments_from_df(df, treatment_colname):
     '''
     returns names of treatments
     '''
+    col_names = df.columns.tolist()
+    if treatment_colname not in col_names:
+        error_str = '''treatment column with name '%s' does not exist, 
+        only folllowing columns found: %s''' % (treatment_colname, col_names)
+        
+        raise IOError(error_str)
+
     return df[treatment_colname].unique().tolist()
 
 

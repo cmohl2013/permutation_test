@@ -44,4 +44,4 @@ class TestPermtest(TestCase):
         
         print(res)
         self.assertEqual(res[0]['p_value'], 0.33333333333333337)
-        #self.assertEqual(res[1]['p_value'], 0.0)     
+        
