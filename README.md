@@ -29,7 +29,7 @@ Command Line Script Usage
 
 Example::
   
-   permtest [path/to/data.csv] [groups_colname] [reference_group_name] -t [test_group_name]
+    permtest [path/to/data.csv] [groups_colname] [reference_group_name] -t [test_group_name]
 
 
 Use help to get info about parameters::
@@ -51,6 +51,39 @@ Use help to get info about parameters::
       -t TESTGROUP, --testgroup TESTGROUP
                             name of the test group as named in th csv table. If
                             not defined, test group is determined automatically.
+
+
+Specifications of data structure in csv file
+--------------------------------------------
+
+- The csv should contain comma separated values. One ore more columns should contain measurement data.
+
+- All columns need to have a name, specified in the first row.
+
+- One column contains names for the groups
+
+Example *my_data.csv*:
+
+============ ============ ============ ===========
+experiment_1 experiment_2 experiment_3 group_names
+============ ============ ============ ===========
+1.4          3            2.5          condition_2  
+2            5            2            condition_1
+5.6          3            17           condition_2
+9            6.5          2            condition_1
+17           5            13.0         condition_1
+17           2            13.0         condition_3
+12           8            18.7         condition_3
+
+
+To perform tests for all experiments, where *condition_1* is the reference and *condition_2* is
+the test data, run follwoing command::
+
+    $ permtest my_data.csv group_names condition_1 -t condition_2
+
+Often, it is convenient to save the output in a textfile::
+
+    $ permtest my_data.csv group_names condition_1 -t condition_2 > my_test_result.txt
 
 
 
