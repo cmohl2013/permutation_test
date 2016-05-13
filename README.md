@@ -74,6 +74,7 @@ experiment_1 experiment_2 experiment_3 group_names
 17           5            13.0         condition_1
 17           2            13.0         condition_3
 12           8            18.7         condition_3
+============ ============ ============ ===========
 
 
 To perform tests for all experiments, where *condition_1* is the reference and *condition_2* is
