@@ -1,5 +1,6 @@
 from unittest import TestCase
 from ..functions import permutationtest
+from ..functions import iter_sample_fast
 import numpy as np
 
 class TestPermutationtest(TestCase):
@@ -44,3 +45,31 @@ class TestPermutationtest(TestCase):
 
         print(res)
         self.assertTrue(res['p_value_lower_than']<0.001)
+
+
+
+    def test_iter_sample_fast(self):
+        
+        def yrange(n):
+            i = 0
+            while i < n:
+                yield i
+                i += 1
+
+        g = yrange(3)
+        subsample=iter_sample_fast(g,2)        
+        print(list(g))
+        print(subsample)
+        self.assertTrue(len(subsample)==2)
+
+        g = yrange(3)
+        subsample=iter_sample_fast(g,3)
+        self.assertTrue(len(subsample)==3)
+
+        g = yrange(3)
+        self.assertRaises(ValueError, lambda:iter_sample_fast(g,4))
+
+
+
+
+

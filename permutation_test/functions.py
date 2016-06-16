@@ -274,7 +274,7 @@ def iter_sample_fast(iterable, samplesize):
     # Fill in the first samplesize elements:
     try:
         for _ in range(samplesize):
-            results.append(iterator.next())
+            results.append(next(iterator))
     except StopIteration:
         raise ValueError("Sample larger than population.")
     random.shuffle(results)  # Randomize their positions
