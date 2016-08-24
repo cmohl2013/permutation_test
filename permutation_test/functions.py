@@ -54,24 +54,18 @@ def permutationtest(data, ref_data, detailed=False, n_combinations_max=20000, ve
     
     greater_than_index = mean_diff > vals
     lower_than_index = mean_diff < vals
-    # print 'greater than index: ' + str(greater_than_index)
-    # print 'loweer than index: ' + str(lower_than_index)
-    # print 'vals: ' + str(vals)
-    # print 'cum_freq: ' + str(cum_freq)
     
-    # if not greater_than_index.any():
-    #     p_value_greater_than = 1
-    # else:
-    #     p_value_greater_than = 1-cum_freq[greater_than_index][-1]
-        
-    # if not lower_than_index.any():
-    #     p_value_lower_than = 1  
-    # else:
-    #     p_value_lower_than = cum_freq[lower_than_index][0]
-      
-    p_value_lower_than = cum_freq[lower_than_index][0]    
-    # print 'cum_freq[lower_than_index] :' + str(cum_freq[lower_than_index])
-    p_value_greater_than = 1-cum_freq[greater_than_index][-1]        
+    
+    if lower_than_index.all() and not greater_than_index.all():
+        p_value_lower_than = 0
+        p_value_greater_than = 1
+    elif not lower_than_index.all() and greater_than_index.all():
+        p_value_lower_than = 1
+        p_value_greater_than = 0   
+    else:    
+        p_value_lower_than = cum_freq[lower_than_index][0]    
+        # print 'cum_freq[lower_than_index] :' + str(cum_freq[lower_than_index])
+        p_value_greater_than = 1-cum_freq[greater_than_index][-1]        
     
     p_value = min((p_value_lower_than, p_value_greater_than))
 
