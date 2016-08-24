@@ -6,7 +6,7 @@ def readme():
 
 
 setup(name='permutation_test',
-      version='0.15',
+      version='0.16',
       description='Implementation of Fishers permutation test',
       long_description=readme(),
       url='https://github.com/cmohl2013/permutation_test',
