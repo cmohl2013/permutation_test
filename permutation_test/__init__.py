@@ -1,1 +1,1 @@
-from .functions import permutationtest
+from .functions import permutationtest, benjamini_hochberg_procedure

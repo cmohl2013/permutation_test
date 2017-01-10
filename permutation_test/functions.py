@@ -287,3 +287,40 @@ def nCk(n,k):
     return int( functools.reduce(mul, (Fraction(n-i, i+1) for i in list(range(k))), 1) )
 
 
+
+def benjamini_hochberg_procedure(pvalues, alpha=0.05):
+    '''
+    returns a boolean array indicating if the null hypothesis of this test
+    can be rejected.
+
+    Controls the false-discovery rate
+    '''
+    pvalues = np.array(pvalues)
+    m = pvalues.size
+    ranks = np.argsort(pvalues)
+    inverse_ranks = np.zeros(m, dtype=int)
+    inverse_ranks[ranks] = np.arange(m)
+
+    sorted_pvalues = pvalues[ranks]
+
+    print(sorted_pvalues)
+
+    found = False
+    for k, p in enumerate(sorted_pvalues):
+        t = float(k+1)/m*alpha
+        print(k+1, float(k+1)/m, p, t)
+        if p > t:
+            found = True
+            break
+
+    if not found:
+        k = m
+
+    reject_null_hypo = False*np.ones_like(pvalues, dtype=bool)
+    reject_null_hypo[:k] = True
+
+    return reject_null_hypo[inverse_ranks]
+
+
+
+
