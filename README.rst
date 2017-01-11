@@ -51,6 +51,14 @@ Use help to get info about parameters::
       -t TESTGROUP, --testgroup TESTGROUP
                             name of the test group as named in th csv table. If
                             not defined, test group is determined automatically.
+       -a ALPHA, --alpha ALPHA
+                             significance level alpha (between 0 and 1) If not
+                             defined, alpha is set to 0.05.
+       -m MULTI_COMP_CORR, --multi_comp_corr MULTI_COMP_CORR
+                             perform multiple comparison correction with benjamini
+                             hochberg procedure yes/no, If not defined, correction
+                             is performed.
+                      
 
 
 Specifications of data structure in csv file
