@@ -9,7 +9,7 @@ import permutation_test as p
 import permutation_test.csv_parser as cp
 import pandas as pd
 import argparse
-from functions import benjamini_hochberg_procedure
+from permutation_test.functions import benjamini_hochberg_procedure
 
 def main():
     

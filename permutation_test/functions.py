@@ -303,12 +303,12 @@ def benjamini_hochberg_procedure(pvalues, alpha=0.05):
 
     sorted_pvalues = pvalues[ranks]
 
-    print(sorted_pvalues)
+    
 
     found = False
     for k, p in enumerate(sorted_pvalues):
         t = float(k+1)/m*alpha
-        print(k+1, float(k+1)/m, p, t)
+        #print(k+1, float(k+1)/m, p, t)
         if p > t:
             found = True
             break
