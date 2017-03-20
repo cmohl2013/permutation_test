@@ -7,8 +7,9 @@ import permutation_test.ap as ap
 from operator import mul   
 from fractions import Fraction
 import functools
-
-
+from operator import itemgetter 
+import collections
+from numpy.random import normal
 def permutationtest(data, ref_data, detailed=False, n_combinations_max=20000, verbose=True, n_bins=None):
     ''' 
     Christoph Moehl, Image and Data Analysis Facility, DZNE Bonn, Germany
@@ -42,31 +43,50 @@ def permutationtest(data, ref_data, detailed=False, n_combinations_max=20000, ve
     Ernst, M. D. (2004). Permutation methods: a basis for exact inference. 
     Statistical Science, 19(4), 676-685
     '''
-    mean_diff = getDiffOfMean(data, ref_data)
+    
+    
     mean_diffs = getMeanDiffListForAllPermutations(data, ref_data\
                             , n_combinations_max=n_combinations_max)
-
     print('nr of mean diffs: ' + str(len(mean_diffs)))
-    freq, vals = getHistogramFreqAndCenters(mean_diffs, n_bins=n_bins)
-    bin_width = getBinWidth(vals)
 
-    cum_freq = np.cumsum(freq) * bin_width #cumulative histogram values
+
+    freq, vals, edges = getHistogramFreqAndCenters(mean_diffs, n_bins=n_bins)
     
-    greater_than_index = mean_diff > vals
-    lower_than_index = mean_diff < vals
+   
+    if (not is_list_of_tuples(data)) and (not is_list_of_tuples(ref_data)):
+        #if data without error
+        mean_diff = getDiffOfMean(data, ref_data)
+        p_value_lower_than, p_value_greater_than = calc_pval(mean_diff, freq, vals)
+
+    else:
+        #if data with error
+        freq_s, _, _ = getHistForDatWithErr(data, ref_data, edges)
+        p_value_lower_than, p_value_greater_than = calc_pval_with_err(freq_s, freq, vals)
+        mean_diff = np.average(vals, weights=freq_s) #ca. mean diff for report
+
+            
+    
+
+
+    # cum_freq = np.cumsum(freq) * bin_width #cumulative histogram values
+    
+    # greater_than_index = mean_diff > vals
+    # lower_than_index = mean_diff < vals
     
     
-    if lower_than_index.all() and not greater_than_index.all():
-        p_value_lower_than = 0
-        p_value_greater_than = 1
-    elif not lower_than_index.all() and greater_than_index.all():
-        p_value_lower_than = 1
-        p_value_greater_than = 0   
-    else:    
-        p_value_lower_than = cum_freq[lower_than_index][0]    
-        # print 'cum_freq[lower_than_index] :' + str(cum_freq[lower_than_index])
-        p_value_greater_than = 1-cum_freq[greater_than_index][-1]        
+    # if lower_than_index.all() and not greater_than_index.all():
+    #     p_value_lower_than = 0
+    #     p_value_greater_than = 1
+    # elif not lower_than_index.all() and greater_than_index.all():
+    #     p_value_lower_than = 1
+    #     p_value_greater_than = 0   
+    # else:    
+    #     p_value_lower_than = cum_freq[lower_than_index][0]    
+    #     # print 'cum_freq[lower_than_index] :' + str(cum_freq[lower_than_index])
+    #     p_value_greater_than = 1-cum_freq[greater_than_index][-1]        
     
+    
+
     p_value = min((p_value_lower_than, p_value_greater_than))
 
 
@@ -91,6 +111,45 @@ def permutationtest(data, ref_data, detailed=False, n_combinations_max=20000, ve
     return p_value               
 
 
+def calc_pval_with_err(freq_s, freq, vals):
+    bin_width = getBinWidth(vals)
+    cum_freq = np.cumsum(freq) * bin_width #cumulative histogram values
+
+    weights = freq_s * freq
+    
+    p_value_lower_than = np.average(cum_freq, weights=weights)
+    p_value_greater_than = 1-p_value_lower_than
+
+    return p_value_lower_than, p_value_greater_than
+
+
+def calc_pval(mean_diff, freq, vals):
+    bin_width = getBinWidth(vals)
+    #lower_edges = vals-bin_width*0.5
+    cum_freq = np.cumsum(freq) * bin_width #cumulative histogram values
+    
+    #meandiff_index = 
+    greater_than_index = mean_diff > vals
+    lower_than_index = mean_diff < vals
+    
+    
+
+    if lower_than_index.all() and not greater_than_index.all():
+        p_value_lower_than = 0
+        p_value_greater_than = 1
+    elif not lower_than_index.all() and greater_than_index.all():
+        p_value_lower_than = 1
+        p_value_greater_than = 0   
+    else:    
+        p_value_lower_than = cum_freq[lower_than_index][0]    
+        # print 'cum_freq[lower_than_index] :' + str(cum_freq[lower_than_index])
+        p_value_greater_than = 1-cum_freq[greater_than_index][-1]        
+    
+    
+
+    return p_value_lower_than, p_value_greater_than 
+
+
 def getBinWidth(vals):
     if len(vals)<2:
         return 1
@@ -102,6 +161,29 @@ def getBinWidth(vals):
 #       return list(itertools.permutations(lst, len(lst)))
 #   return  list(itertools.permutations(lst, num))
         
+
+def getHistForDatWithErr(lst_1, lst_2, bin_edges, n_samples=10000):
+    
+    mdiffs = [getDiffOfMeanRandomized(lst_1, lst_2) for i in range(n_samples)]
+    freq, bin_centers, edge = getHistogramFreqAndCenters(mdiffs, bin_edges=bin_edges)
+    return freq, bin_centers, edge
+
+
+def getDiffOfMeanRandomized(lst_1, lst_2):
+    '''
+    randomized diff of mean for list of tuples (vel, error)
+    is calculated. 
+    '''
+
+    if not is_list_of_tuples(lst_1) or not is_list_of_tuples(lst_2):
+        raise ValueError('input must be lists of tuples but is %s and %s'\
+                  , lst_1, lst_2)
+
+    lst_1r, lst_2r = randomize_permutation_data((lst_1, lst_2))
+    return getDiffOfMean(lst_1r, lst_2r)
+
+
+
 def getDiffOfMean(lst_1, lst_2):
     '''
     result = mean(lst_1) - mean(lst_2)
@@ -116,14 +198,85 @@ def getDiffOfMean(lst_1, lst_2):
     return out
     
 
+def is_list_of_tuples(data, n=2):
+
+    try:
+        nr_el = list(map(len, data))
+        is_list_of_tuples =  (np.array(nr_el)==n).all()
+    except:
+        is_list_of_tuples = False
+    return is_list_of_tuples        
+
+
+def check_data_format(permutations):
+    '''
+    returns 1 if data points are single values
+    returns 2 if the data points are tuples with (value,error)
+    returns 0 if data structure is not valid
+    '''
+    has_tuples = False
+    has_single_vals = False
+
+    for perm in permutations:
+        if len(perm)!=2:
+            #only 2 groups allowed
+            return 0
+        
+        for group in perm:
+            for d in group:
+                if isinstance(d, collections.Iterable):
+                    if len(d)!=2:
+                        return 0
+                    has_tuples = True
+                else:
+                    has_single_vals = True
+
+    if has_tuples and not has_single_vals:
+        return 2
+    if not has_tuples and has_single_vals:
+        return 1
+    if has_tuples and has_single_vals:
+        return 0
+
+
+def randomize_data_point(datapoint):
+    val = datapoint[0]
+    err = datapoint[1]
+    return normal(val, err)
+
+def randomize_permutation_data(perm): 
+    a = [randomize_data_point(dat) for dat in perm[0]]
+    b = [randomize_data_point(dat) for dat in perm[1]]
+    return (a, b)
+
+
+
+
 def getMeanDiffListForAllPermutations(lst_1, lst_2, n_combinations_max = 20000):
     '''
     lst_1 and lst_2 are fused and from all possible permutations, 
     mean differences are calculated.
+
+    if lst_1 and lst_2 are tuples (second value= statistical error)
+    , data is randomized, i.e. (val, err) tuple
+    is transformed into a normal distributed random variable with mu=val and sigma=err
+
+
     '''
     perms = getPerms(lst_1 + lst_2, len(lst_1), n_combinations_max=n_combinations_max)
-    mean_diffs = [getDiffOfMean(perm[0], perm[1]) for perm in perms]
-    return mean_diffs
+    
+    format = check_data_format(perms)
+    if format == 1:
+        #if single values
+        mean_diffs = [getDiffOfMean(perm[0], perm[1]) for perm in perms]
+        return mean_diffs
+
+    if format == 2:
+        #if (value,error) tuples
+        perms_rand = [randomize_permutation_data(perm) for perm in perms]
+        mean_diffs = [getDiffOfMean(perm[0], perm[1]) for perm in perms_rand]
+        return mean_diffs
+
 
 def permutations(n, g):
     '''
@@ -161,16 +314,16 @@ def getPerms(dat, n_of_group_a, n_combinations_max = 20000):
     example:
     In [33]: p.getPerms([1,2,3,4,5],3)
     Out[33]: 
-    [(array([1, 2, 3]), [4, 5]),
-     (array([1, 2, 4]), [3, 5]),
-     (array([1, 2, 5]), [3, 4]),
-     (array([1, 3, 4]), [2, 5]),
-     (array([1, 3, 5]), [2, 4]),
-     (array([1, 4, 5]), [2, 3]),
-     (array([2, 3, 4]), [1, 5]),
-     (array([2, 3, 5]), [1, 4]),
-     (array([2, 4, 5]), [1, 3]),
-     (array([3, 4, 5]), [1, 2])]
+    [([1, 2, 3], [4, 5]),
+     ([1, 2, 4], [3, 5]),
+     ([1, 2, 5], [3, 4]),
+     ([1, 3, 4], [2, 5]),
+     ([1, 3, 5], [2, 4]),
+     ([1, 4, 5], [2, 3]),
+     ([2, 3, 4], [1, 5]),
+     ([2, 3, 5], [1, 4]),
+     ([2, 4, 5], [1, 3]),
+     ([3, 4, 5], [1, 2])]
 
     '''
     
@@ -193,8 +346,9 @@ def getPerms(dat, n_of_group_a, n_combinations_max = 20000):
         group_b = [dat[i] for i in dat_index if not i in perm]
         if len(group_b) == 0:
             raise('gp')
-        dat_np = np.array(dat)
-        group_a = dat_np[perm]
+        
+        group_a = list(itemgetter(*perm)(dat))
+        
         combi.append((group_a, group_b))
     return combi    
 
@@ -222,7 +376,7 @@ def calc_bin_number(data):
 
 
 
-def getHistogramFreqAndCenters(data, n_bins=None):
+def getHistogramFreqAndCenters(data, n_bins=None, bin_edges=None):
     '''
     calculation of histogram (frequency and bin positions) with auto bin number
     '''
@@ -237,7 +391,12 @@ def getHistogramFreqAndCenters(data, n_bins=None):
         #warnings.warn(warn_message, UserWarning)
         
 
-    freq, bin_edges = np.histogram(data\
+    if bin_edges is not None:
+        freq, bin_edges = np.histogram(data\
+                        , bins=bin_edges[1:-1]\
+                        , normed=True)
+    else:    
+        freq, bin_edges = np.histogram(data\
                         , bins=n_bins\
                         , normed=True)
     
@@ -251,7 +410,7 @@ def getHistogramFreqAndCenters(data, n_bins=None):
 
 
     bin_centers = np.diff(bin_edges)/2 + bin_edges[:-1]
-    return (freq, bin_centers)
+    return (freq, bin_centers, bin_edges)
 
 
 

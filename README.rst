@@ -159,6 +159,33 @@ p_value_greater_than: the probability that mean of data is
 not grater than mean of ref_data 
 
 
+
+
+Dealing with error propagation
+------------------------------
+
+permutationtest() allows the input of statistical error for each data point.
+If data is provided in tuples
+
+   [(x1, sigma1), (x2, sigma2), (x3, sigma3)]
+
+instead of plain lists
+
+   [x1, x2, x3]
+
+the first value of the tuple is interpreted as the data point, the second value as
+its standard deviation.  
+
+
+To account for statistical errors σ, we modified Fisher's test by implementing following numeric approach:
+For all permutations, each data point x_i (with error σ_i) was replaced with a random value r_i, where r_i is distributed following a Normal distribution N(μ, σ), with μ=x_i and σ= σ_i. In other words, we assumed normal distribution for the statistical error of the least squares fit. From now on following Fisher’s standard procedure, mean differences s for each permutation were calculated from these randomized data to finally obtain an empiric probability distribution P(s) of mean differences, describing the null hypothesis situation that both groups have identical distribution. 
+To account for the error of the actual mean difference s_0 of the two populations, we followed the same approach as described above by repeatedly randomizing the data points and collecting 10000 mean differences (this time, of course, without permuting between the groups). Thus, we obtained an empirical probability distribution P0(s) of the actual mean difference. 
+
+
+
+
+
+
 Christoph Möhl,
 Image and Data Analysis Facililty/Core Faciliies,
 Deutsches Zentrum für Neurodegenerative Erkrankungen e. V. (DZNE) in der Helmholtz-Gemeinschaft

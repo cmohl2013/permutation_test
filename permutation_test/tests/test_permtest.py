@@ -44,4 +44,24 @@ class TestPermtest(TestCase):
         
         print(res)
         self.assertEqual(res[0]['p_value'], 0.33333333333333337)
+
+
+    def test_permtest_with_err(self):
+        ref_data = [(-1,0.1),(0,0.1),(0,0.1),(1,0.1), (3, 0.1), (3, 0.1), (4, 0.1)]
+        data =  [(2, 0.1), (4, 0.1), (4, 0.1), (5, 0.1), (5, 0.1), (6, 0.1)]
+
+
+        print('with err')    
+        res_err = permutationtest(data, ref_data, verbose=True, n_bins=None)    
+ 
         
+        ref_data = [-1, 0, 0, 1, 3, 3, 4]
+        data =  [2, 4, 4, 5, 5, 6]
+
+
+        print('no err')    
+        res = permutationtest(data, ref_data, verbose=True, n_bins=None)    
+
+
+        self.assertTrue(res[0]['p_value'] > 0.33333333333333337)    
+    
