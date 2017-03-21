@@ -189,13 +189,8 @@ To account for the error of the actual mean difference 𝑠^ of the two populati
 The p values pg (probability that mean of test data is greater than mean of reference data)and pl (probability that mean of test data is lower than mean of reference data) are finally calculated by
 
 .. image:: formula.png
-   :scale: 60%
+   :scale: 50 %
    
-
-
-
-
-
 
 
 Christoph Möhl and Manuel Schölling
