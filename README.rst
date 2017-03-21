@@ -188,7 +188,7 @@ To account for statistical errors σ, we modified the test by implementing follo
 To account for the error of the actual mean difference 𝑠^ of the two populations, we follow the same approach of randomized sampling as described above, but this time without permuting between the groups. Thus, we obtain an empirical probability distribution P0(𝑠^).
 The p values pg (probability that mean of test data is greater than mean of reference data)and pl (probability that mean of test data is lower than mean of reference data) are finally calculated by
 
-.. image:: formula.png
+.. image:: formula.jpg
    :scale: 50 %
    
 
