@@ -100,11 +100,11 @@ Python Library Use Example
 --------------------------
 ::
 
-    >>> import permutation_test as p
+    >>> import permutationtest as p
     >>> data = [1,2,2,3,3,3,4,4,5]
     >>> ref_data = [3,4,4,5,5,5,6,6,7]
 
-    >>> p_value = p.permutation_test(data, ref_data)
+    >>> p_value = p.permutationtest(data, ref_data)
     taking random subsample of size 20000 from 48620 possible permutations
     nr of mean diffs: 20000
 
